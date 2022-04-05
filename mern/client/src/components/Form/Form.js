@@ -30,21 +30,30 @@ const Form=({currentId,setCurretId})=>{
     e.preventDefault();
 
     if(currentId){
-      dispatch(updatePost(currentId,postData))  
+      dispatch(updatePost(currentId,postData))
     }
     else{
     dispatch(createPost(postData))
     }
+    clear()
   }
 
   const clear=()=>{
+    // setCurrentId()라고 하면 type에러가 나서 조치해뒀다
+    setCurretId=null
 
+    setPostData({
+    creator:'',
+    title:'',
+    message:'',
+    tags:'',
+    selectedFile:''})
   }
 
   return(
     <Paper className={classes.paper}>
       <form autoComplete='off' noValidate className={`${classes.root} ${classes.form}`} onSubmit={handleSubmit}>
-        <Typography variant="h6">Creating a Memory</Typography>
+        <Typography variant="h6">{currentId ? 'Editing' : 'Creating'}</Typography>
         <TextField 
         name='creator' 
         variant='outlined' 
@@ -61,7 +70,6 @@ const Form=({currentId,setCurretId})=>{
         fullWidth
         value={postData.title}
         onChange={(e)=>setPostData({...postData,title:e.target.value})}
-        // 이렇게 설정한이유는 ...postData를 통해서 나머지 데이터는 유지 시키고 creator의 값만 바뀌게 하려고
         />
         <TextField 
         name='message' 
@@ -70,7 +78,6 @@ const Form=({currentId,setCurretId})=>{
         fullWidth
         value={postData.message}
         onChange={(e)=>setPostData({...postData,message:e.target.value})}
-        // 이렇게 설정한이유는 ...postData를 통해서 나머지 데이터는 유지 시키고 creator의 값만 바뀌게 하려고
         />
         <TextField 
         name='tags' 
@@ -78,8 +85,7 @@ const Form=({currentId,setCurretId})=>{
         label='Tags' 
         fullWidth
         value={postData.tags}
-        onChange={(e)=>setPostData({...postData,tags:e.target.value})}
-        // 이렇게 설정한이유는 ...postData를 통해서 나머지 데이터는 유지 시키고 creator의 값만 바뀌게 하려고
+        onChange={(e)=>setPostData({...postData,tags:e.target.value.split(',')})}
         />
         <div className={classes.fileInput}>
           <FileBase
